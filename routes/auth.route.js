@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 const gravatar = require('gravatar');
+const auth = require('../middleware/auth')
 
 const User = require('../models/user.model.js');
 
@@ -84,7 +85,93 @@ router.post('/register', [
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Server error');
+        res.status(500).send('Error del servidor');
+    }
+});
+
+// @route POST api/user/login
+// @desc Login user
+// @access Public
+router.post('/login', [
+    // Validation for email and password
+    check('email', 'Ingresa un correo electrónico valido').isEmail(),
+    check('password', 'Ingresa la contraseña asociada a tu cuenta').exists()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
+    // If everything is good
+    // Get email and password from request body
+    const { email, password } = req.body;
+
+    try {
+        // Find user
+        let user = await User.findOne({
+            email
+        });
+
+        // If user not found in database
+        if(!user) {
+            return res.status(400).json({
+                errors: [{
+                    msg: 'Correo electrónico o contraseña incorrecta'
+                }]
+            });
+        }
+
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        // If password don't match
+        if(!isMatch) {
+            return res.status(400).json({
+                errors: [{
+                    msg: 'Correo electrónico o contraseña incorrecta'
+                }]
+            });
+        }
+
+        // Payload for jwt
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
+
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET, {
+                expiresIn: 360000
+            }, (err, token) => {
+                if(err) throw err;
+                res.json({
+                    token
+                })
+            }
+        );
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');
+    }   
+});
+
+// @route POST api/user/profile
+// @desc User information
+// @access Private
+router.get('/profile', auth, async (req, res) => {
+    try {
+        // Get user information by id
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');
     }
 });
 
