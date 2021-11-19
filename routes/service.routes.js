@@ -129,4 +129,31 @@ router.get('/categories', async (req, res) => {
     }
 });
 
+// @route GET api/service/search
+// @desc Get a list of services by search query
+// @access Public
+router.get('/search', async (req, res) => {
+    const query = {};
+
+    if(req.query.search) {
+        query.title = {
+            $regex: req.query.search,
+            $options: 'i'
+        }
+
+        // Assign category
+        if(req.query.category && req.query.category != 'All') {
+            query.category = req.query.category;
+        }
+    }
+
+    try {
+        let services = await Service.find(query).select('-image');
+        res.json(services);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error al obtener los servicios');
+    }
+});
+
 module.exports = router;
