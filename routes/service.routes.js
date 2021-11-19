@@ -87,7 +87,7 @@ router.get('/get/image/:serviceId', serviceById, (req, res) => {
 });
 
 // @route GET api/service/list
-// @desc Get a list of products with filter
+// @desc Get a list of services with filter
 // option(order = asc or desc, sortBy any product like title, limit, number of returned product)
 // @access Public
 router.get('/list', async(req, res) => {
@@ -106,6 +106,26 @@ router.get('/list', async(req, res) => {
     } catch(error) {
         console.log(error);
         res.status(500).send('Consulta invalida');
+    }
+});
+
+// @route GET api/service/categories
+// @desc Get a list of categories of services
+// @access Public
+router.get('/categories', async (req, res) => {
+    try {
+        let categories = await Service.distinct('category');
+        if(!categories) {
+            return res.status(400).json({
+                error: 'Categorias no encontradas'
+            });
+        }
+
+        res.json(categories);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error del servidor');
     }
 });
 
