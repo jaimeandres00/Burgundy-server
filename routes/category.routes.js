@@ -53,11 +53,48 @@ router.get('/list', async (req, res) => {
     }
 });
 
-// @route GET api/category/:categoryId
+// @route GET api/category/get/:categoryId
 // @desc Get single category
 // @access Public
-router.get('/:categoryId', categoryById, async (req, res) => {
+router.get('/get/:categoryId', categoryById, async (req, res) => {
     res.json(req.category);
+});
+
+// @route PUT api/category/update/:categoryId
+// @desc Update single category
+// @access Private admin
+router.put('/update/:categoryId', auth, adminAuth, categoryById, async (req, res) => {
+    let category = req.category;
+    const { name } = req.body;
+    if(name) category.name = name.trim()
+
+    try {
+        category = await category.save();
+        res.json(category);
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');
+    }
+});
+
+// @route DELETE api/category/delete/:categoryId
+// @desc Delete single category
+// @access Private admin
+router.delete('/delete/:categoryId', auth, adminAuth, categoryById, async (req, res) => {
+    let category = req.category;
+
+    try {
+        let deletedCategory = await category.remove();
+        
+        res.json({
+            message: `Se elimino la categoria de ${ deletedCategory.name } satisfactoriamente`
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');
+    }
 });
 
 module.exports = router;
