@@ -86,4 +86,27 @@ router.get('/get/image/:serviceId', serviceById, (req, res) => {
     });
 });
 
+// @route GET api/service/list
+// @desc Get a list of products with filter
+// option(order = asc or desc, sortBy any product like title, limit, number of returned product)
+// @access Public
+router.get('/list', async(req, res) => {
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+    try {
+        let services = await Service.find({})
+        .select('-image').populate('category').sort([
+            [sortBy, order]
+        ]).limit(limit).exec();
+
+        res.json(services);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Consulta invalida');
+    }
+});
+
 module.exports = router;

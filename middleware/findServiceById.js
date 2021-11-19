@@ -11,7 +11,7 @@ module.exports = async function (req, res, next) {
     }
 
     try {
-        let service = await Service.findById(serviceId).populate('user').populate('category');
+        let service = await Service.findById(serviceId).select('-user').populate('category');
 
         if(!service) {
             return res.status(403).json({
