@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const categoryRoutes = require('./routes/category.routes')
-//const serviceRoutes = require('./routes/services.routes');
+const serviceRoutes = require('./routes/service.routes');
 //const userRoutes = require('./routes/users.routes');
 
 // Initializations
@@ -29,7 +29,7 @@ connectDB();
 // Routes
 app.use('/api/user/', authRoutes);
 app.use('/api/category/', categoryRoutes);
-//app.use('/api/service/', serviceRoutes);
+app.use('/api/service/', serviceRoutes);
 //app.use('/api/users/', userRoutes);
 
 
