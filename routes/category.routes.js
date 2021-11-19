@@ -3,6 +3,7 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/checkAuth');
 const adminAuth = require('../middleware/checkAdmin');
 const Category = require('../models/category.model');
+const categoryById = require('../middleware/findCategoryById');
 
 const router = express.Router();
 
@@ -50,6 +51,13 @@ router.get('/list', async (req, res) => {
         console.log(error);
         res.status(500).send('Error del servidor');
     }
+});
+
+// @route GET api/category/:categoryId
+// @desc Get single category
+// @access Public
+router.get('/:categoryId', categoryById, async (req, res) => {
+    res.json(req.category);
 });
 
 module.exports = router;
