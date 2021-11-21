@@ -156,4 +156,72 @@ router.get('/search', async (req, res) => {
     }
 });
 
+// @route PUT api/service/update/:serviceId
+// @desc Update service
+// @access Private admin
+router.put('/update/:serviceId', auth, adminAuth, serviceById, async (req, res) => {
+    let service = req.service;
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, async (err, fields, files) => {
+        if(err) {
+            return res.status(400).json({
+                error: 'No fue posible cargar la imagen'
+            });
+        }
+        
+        if(files.image) {
+            if(files.image.mimetype !== 'image/jpeg' && files.image.mimetype !== 'image/jpg' && files.image.mimetype !== 'image/png') {
+                return res.status(400).json({
+                    error: 'Formato de imagen no permitido'
+                });
+            }
+
+            if(files.image.size > 1000000) {
+                return res.status(400).json({
+                    error: 'Imagen con tamaño superior a 1MB'
+                });
+            }
+
+            service.image.data = fs.readFileSync(files.image.filepath);
+            service.image.contentType = files.image.mimetype;
+        }
+        
+        // Check for all fields
+        const { title, description, price, category } = fields;
+
+        if(title) service.title = title.trim();
+        if(description) service.description = description.trim();
+        if(price) service.price = price.trim();
+        if(category) service.category = category.trim();
+       
+        try {
+            service = await service.save();
+            res.json(service);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error del servidor');
+        }        
+    });
+});
+
+// @route DELETE api/service/delete/:serviceId
+// @desc Delete single category
+// @access Private admin
+router.delete('/delete/:serviceId', auth, adminAuth, serviceById, async (req, res) => {
+    let service = req.service;
+
+    try {
+        let deletedService = await service.remove();
+
+        res.json({
+            message: `Se elimino el sevicio ${ deletedService.title } satisfactoriamente`
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');        
+    }
+});
+
 module.exports = router;

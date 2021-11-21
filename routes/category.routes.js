@@ -61,7 +61,7 @@ router.get('/get/:categoryId', categoryById, async (req, res) => {
 });
 
 // @route PUT api/category/update/:categoryId
-// @desc Update single category
+// @desc Update category
 // @access Private admin
 router.put('/update/:categoryId', auth, adminAuth, categoryById, async (req, res) => {
     let category = req.category;
