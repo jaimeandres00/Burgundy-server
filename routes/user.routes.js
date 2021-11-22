@@ -32,6 +32,11 @@ router.get('/profile', checkAuthMiddleware.checkAuth, userController.getUser);
 // @access Private admin
 router.get('/list', [checkAuthMiddleware.checkAuth , checkRoleMiddleware.isAdmin], userController.getUsers);
 
+// @route GET api/user/search
+// @desc Get a list of users by search query
+// @access Private admin
+router.get('/search', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userController.searchUsers);
+
 // @route PUT api/user/update/:userId
 // @desc Update user information
 // @access Private admin

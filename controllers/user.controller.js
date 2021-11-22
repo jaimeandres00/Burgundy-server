@@ -96,6 +96,33 @@ async function getUsers(req, res) {
     }
 };
 
+// @route GET api/user/search
+// @desc Get a list of users by search query
+// @access Private admin
+async function searchUsers(req, res) {
+    const query = {};
+
+    if(req.query.search) {
+        query.name = {
+            $regex: req.query.search,
+            $options: 'i'
+        }
+
+        // Assign name
+        if(req.query.category && req.query.category != 'All') {
+            query.category = req.query.category;
+        }        
+    }
+
+    try {
+        let users = await User.find(query).select('-password');
+        res.json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error al obtener los servicios');
+    }
+};
+
 // @route PUT api/user/update/:userId
 // @desc Update user information
 // @access Private admin
@@ -147,6 +174,7 @@ module.exports = {
     createUser: createUser,
     getUsers: getUsers,
     getUser: getUser,
+    searchUsers: searchUsers,
     updateUser: updateUser,
     deleteUser: deleteUser
 };
