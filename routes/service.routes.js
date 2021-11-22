@@ -23,7 +23,7 @@ router.get('/get/image/:serviceId', serviceByIdMiddleware, serviceController.get
 
 // @route GET api/service/list
 // @desc Get a list of services with filter
-// option(order = asc or desc, sortBy any product like title, limit, number of returned product)
+// option(order = asc or desc, sortBy any service like title, limit, number of returned service)
 // @access Public
 router.get('/list', serviceController.getServices);
 
@@ -43,7 +43,7 @@ router.get('/search', serviceController.searchServices);
 router.put('/update/:serviceId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdminOrServiceProvider], serviceByIdMiddleware, serviceController.updateService);
 
 // @route DELETE api/service/delete/:serviceId
-// @desc Delete single category
+// @desc Delete service
 // @access Private admin, service provider
 router.delete('/delete/:serviceId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdminOrServiceProvider], serviceByIdMiddleware, serviceController.deleteService);
 

@@ -27,7 +27,9 @@ router.get('/get/:categoryId', categoryByIdMiddleware, categoryController.getCat
 // @route PUT api/category/update/:categoryId
 // @desc Update category
 // @access Private admin
-router.put('/update/:categoryId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.updateCategory);
+router.put('/update/:categoryId', [
+    check('name', 'El nombre es requerido').trim().not().isEmpty()
+], [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.updateCategory);
 
 // @route DELETE api/category/delete/:categoryId
 // @desc Delete single category

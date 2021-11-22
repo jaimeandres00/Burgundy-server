@@ -58,7 +58,7 @@ async function getCategory(req, res) {
 async function updateCategory(req, res) {
     let category = req.category;
     const { name } = req.body;
-    if(name) category.name = name.trim()
+    if(name) category.name = name.trim();
 
     try {
         category = await category.save();

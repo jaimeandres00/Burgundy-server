@@ -2,6 +2,7 @@ const express = require('express');
 const { check } = require('express-validator');
 const checkAuthMiddleware  = require('../middleware/checkAuth');
 const checkRoleMiddleware = require('../middleware/checkRole');
+const userByIdMiddleware = require('../middleware/findUserById');
 const userController = require('../controllers/user.controller');
 
 const router = express.Router();
@@ -25,5 +26,20 @@ router.post('/create', [
 // @desc User information
 // @access Private
 router.get('/profile', checkAuthMiddleware.checkAuth, userController.getUser);
+
+// @route GET api/user/list
+// @desc Get a list of users with filter
+// @access Private admin
+router.get('/list', [checkAuthMiddleware.checkAuth , checkRoleMiddleware.isAdmin], userController.getUsers);
+
+// @route PUT api/user/update/:userId
+// @desc Update user information
+// @access Private admin
+router.put('/update/:userId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.updateUser);
+
+// @route DELETE api/user/delete/:userId
+// @desc Delete user account
+// @access Private admin
+router.delete('/delete/:userId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.deleteUser);
 
 module.exports = router;

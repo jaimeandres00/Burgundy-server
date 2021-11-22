@@ -82,7 +82,7 @@ function getServiceImage(req, res) {
 
 // @route GET api/service/list
 // @desc Get a list of services with filter
-// option(order = asc or desc, sortBy any product like title, limit, number of returned product)
+// option(order = asc or desc, sortBy any service like title, limit, number of returned service)
 // @access Public
 async function getServices(req, res) {
     let order = req.query.order ? req.query.order : 'asc';
@@ -201,7 +201,7 @@ async function updateService(req, res) {
 };
 
 // @route DELETE api/service/delete/:serviceId
-// @desc Delete single category
+// @desc Delete service
 // @access Private admin, service provider
 async function deleteService(req, res) {
     let service = req.service;
@@ -210,7 +210,7 @@ async function deleteService(req, res) {
         let deletedService = await service.remove();
 
         res.json({
-            message: `Se elimino el sevicio ${ deletedService.title } satisfactoriamente`
+            message: `Se elimino el servicio ${ deletedService.title } satisfactoriamente`
         });
     } catch (error) {
         console.log(error.message);

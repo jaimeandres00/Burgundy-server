@@ -6,7 +6,7 @@ module.exports = async function (req, res, next) {
 
     if(!mongoose.Types.ObjectId.isValid(categoryId)) {
         return res.status(403).json({
-            error: 'Category not founded'
+            error: 'Categoria no encontrada'
         });
     }
 

@@ -52,22 +52,6 @@ async function createUser(req, res) {
         // Saver user in database
         await user.save();
 
-        const payload = {
-            user: {
-                id: user.id
-            }
-        };
-
-        jwt.sign(
-            payload, 
-            process.env.JWT_SECRET, {
-                expiresIn: 360000 // for development for production it will 3600
-            }, (err, token) => {
-                if (err) throw err
-                res.json({token})
-            }
-        );
-
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Error del servidor');
@@ -89,7 +73,80 @@ async function getUser(req, res) {
     }
 };
 
+// @route GET api/user/list
+// @desc Get a list of users with filter
+// option(order = asc or desc, sortBy any user like name, limit, number of returned user)
+// @access Public
+async function getUsers(req, res) {
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+    try {
+        let users = await User.find({})
+        .select('-password').sort([
+            [sortBy, order]
+        ]).limit(limit).exec();
+
+        res.json(users);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Consulta invalida');
+    }
+};
+
+// @route PUT api/user/update/:userId
+// @desc Update user information
+// @access Private admin
+async function updateUser(req, res) {
+    let user = req.user;
+    const { name, lastname, phone, gender, password, role } = req.body;
+    if(name) user.name = name.trim();
+    if(lastname) user.lastname = lastname.trim();
+    if(phone) user.phone = phone.trim();
+    if(gender) user.gender = gender;
+    if(role) user.role = role;
+
+    if(password) {
+        // Encrypt password
+        const salt = await bcrypt.genSalt(10); // Generate salt contains 10
+        // Save password
+        user.password = await bcrypt.hash(password, salt); // Use user password and salt to hash password      
+    }
+
+    try {
+        user = await user.save();
+        res.json(user);
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');
+    }
+};
+
+// @route DELETE api/user/delete/:userId
+// @desc Delete user account
+// @access Private admin
+async function deleteUser(req, res) {
+    let user = req.user;
+
+    try {
+        let deletedUser = await user.remove();
+
+        res.json({
+            message: `Se elimino el usuario ${ deletedUser.name } satisfactoriamente`
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error del servidor');        
+    }
+};
+
 module.exports = {
     createUser: createUser,
-    getUser: getUser
+    getUsers: getUsers,
+    getUser: getUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser
 };
