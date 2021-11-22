@@ -20,31 +20,31 @@ router.post('/create', [
     check('email', 'Ingresa un correo electrónico valido').isEmail(),
     check('password', 'Ingresa una contraseña con 8 o más caracteres').isLength({ min: 8 }),
     check('role', 'El rol del usuario es requerido').not().isEmpty()
-], [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userController.createUser);
+], [checkAuthMiddleware, checkRoleMiddleware.isAdmin], userController.createUser);
 
 // @route POST api/user/profile
 // @desc User information
 // @access Private
-router.get('/profile', checkAuthMiddleware.checkAuth, userController.getUser);
+router.get('/profile', checkAuthMiddleware, userController.getUser);
 
 // @route GET api/user/list
 // @desc Get a list of users with filter
 // @access Private admin
-router.get('/list', [checkAuthMiddleware.checkAuth , checkRoleMiddleware.isAdmin], userController.getUsers);
+router.get('/list', [checkAuthMiddleware , checkRoleMiddleware.isAdmin], userController.getUsers);
 
 // @route GET api/user/search
 // @desc Get a list of users by search query
 // @access Private admin
-router.get('/search', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userController.searchUsers);
+router.get('/search', [checkAuthMiddleware, checkRoleMiddleware.isAdmin], userController.searchUsers);
 
 // @route PUT api/user/update/:userId
 // @desc Update user information
 // @access Private admin
-router.put('/update/:userId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.updateUser);
+router.put('/update/:userId', [checkAuthMiddleware, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.updateUser);
 
 // @route DELETE api/user/delete/:userId
 // @desc Delete user account
 // @access Private admin
-router.delete('/delete/:userId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.deleteUser);
+router.delete('/delete/:userId', [checkAuthMiddleware, checkRoleMiddleware.isAdmin], userByIdMiddleware, userController.deleteUser);
 
 module.exports = router;

@@ -12,7 +12,7 @@ const router = express.Router();
 // @access Private admin
 router.post('/create', [
     check('name', 'El nombre es requerido').trim().not().isEmpty()
-], [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], categoryController.createCategory);
+], [checkAuthMiddleware, checkRoleMiddleware.isAdmin], categoryController.createCategory);
 
 // @route GET api/category/list
 // @desc Get all categories
@@ -29,11 +29,11 @@ router.get('/get/:categoryId', categoryByIdMiddleware, categoryController.getCat
 // @access Private admin
 router.put('/update/:categoryId', [
     check('name', 'El nombre es requerido').trim().not().isEmpty()
-], [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.updateCategory);
+], [checkAuthMiddleware, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.updateCategory);
 
 // @route DELETE api/category/delete/:categoryId
 // @desc Delete single category
 // @access Private admin
-router.delete('/delete/:categoryId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.deleteCategory);
+router.delete('/delete/:categoryId', [checkAuthMiddleware, checkRoleMiddleware.isAdmin], categoryByIdMiddleware, categoryController.deleteCategory);
 
 module.exports = router;

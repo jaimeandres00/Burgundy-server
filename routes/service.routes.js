@@ -3,13 +3,14 @@ const checkAuthMiddleware  = require('../middleware/checkAuth');
 const checkRoleMiddleware  = require('../middleware/checkRole');
 const serviceByIdMiddleware = require('../middleware/findServiceById');
 const serviceController = require('../controllers/service.controller');
+const checkServiceBelongsToUser = require('../middleware/checkServiceBelongsToUser');
 
 const router = express.Router();
 
 // @route POST api/service/create
 // @desc Create a service
 // @access Private admin, service provider
-router.post('/create', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdminOrServiceProvider], serviceController.createService);
+router.post('/create', [checkAuthMiddleware, checkRoleMiddleware.isAdminOrServiceProvider], serviceController.createService);
 
 // @route GET api/service/get/:serviceId
 // @desc Get service information
@@ -40,11 +41,11 @@ router.get('/search', serviceController.searchServices);
 // @route PUT api/service/update/:serviceId
 // @desc Update service
 // @access Private admin, service provider
-router.put('/update/:serviceId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdminOrServiceProvider], serviceByIdMiddleware, serviceController.updateService);
+router.put('/update/:serviceId', [checkAuthMiddleware, checkRoleMiddleware.isAdminOrServiceProvider, serviceByIdMiddleware, checkServiceBelongsToUser], serviceController.updateService);
 
 // @route DELETE api/service/delete/:serviceId
 // @desc Delete service
 // @access Private admin, service provider
-router.delete('/delete/:serviceId', [checkAuthMiddleware.checkAuth, checkRoleMiddleware.isAdminOrServiceProvider], serviceByIdMiddleware, serviceController.deleteService);
+router.delete('/delete/:serviceId', [checkAuthMiddleware, checkRoleMiddleware.isAdminOrServiceProvider, serviceByIdMiddleware, checkServiceBelongsToUser], serviceController.deleteService);
 
 module.exports = router;
