@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function(req, res, next) {
+function checkAuth(req, res, next) {
     // Get token from header
     const token = req.header('x-auth-token');
 
@@ -22,4 +22,8 @@ module.exports = function(req, res, next) {
             msg: 'Token invalido'
         });
     }
+};
+
+module.exports = {
+    checkAuth: checkAuth
 };
