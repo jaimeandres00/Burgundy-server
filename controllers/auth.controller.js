@@ -64,7 +64,15 @@ async function signUp(req, res) {
                 expiresIn: 360000 // for development for production it will 3600
             }, (err, token) => {
                 if (err) throw err
-                res.json({token})
+                res.json({
+                    id: user.id,
+                    name: user.name,
+                    lastname: user.lastname,
+                    gender: user.gender,
+                    email: user.email,
+                    role: user.role,
+                    authToken: token
+                })
             }
         );
 
@@ -130,7 +138,13 @@ async function signIn(req, res) {
             }, (err, token) => {
                 if(err) throw err;
                 res.json({
-                    token
+                    id: user.id,
+                    name: user.name,
+                    lastname: user.lastname,
+                    gender: user.gender,
+                    email: user.email,
+                    role: user.role,
+                    authToken: token
                 })
             }
         );
