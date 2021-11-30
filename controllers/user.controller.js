@@ -108,9 +108,8 @@ async function searchUsers(req, res) {
             $options: 'i'
         }
 
-        // Assign name
-        if(req.query.category && req.query.category != 'All') {
-            query.category = req.query.category;
+        if(req.query.role && req.query.role != 'All') {
+            query.role = req.query.role;
         }        
     }
 
