@@ -127,10 +127,11 @@ async function searchUsers(req, res) {
 // @access Private admin
 async function updateUser(req, res) {
     let user = req.user;
-    const { name, lastname, phone, gender, password, role } = req.body;
+    const { name, lastname, phone, birthdate, gender, password, role } = req.body;
     if(name) user.name = name.trim();
     if(lastname) user.lastname = lastname.trim();
     if(phone) user.phone = phone.trim();
+    if(birthdate) user.birthdate = new Date(birthdate);
     if(gender) user.gender = gender;
     if(role) user.role = role;
 
