@@ -8,7 +8,7 @@ module.exports = async function (req, res, next) {
         let service = await Service.findById(serviceId).select('user');
         const user = await User.findOne({ _id: req.user.id }).select('role');
    
-        if(service.user !== req.user.id && user.role !== 2){
+        if(user.role == 0 || (user.role == 1 && service.user !== req.user.id )){
             return res.status(401).json({
                 error: 'Autorización denegada'
             });            
